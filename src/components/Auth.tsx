@@ -68,7 +68,7 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
     } catch {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user.emailVerified) {
-        setError("Verification email sent! Please verify your email");
+        setError("Verification email sent! Please verify your email, check your spam folder too");
         return;
       }
       setError("❌ There is already an account with this email");
