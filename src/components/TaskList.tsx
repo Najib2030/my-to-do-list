@@ -43,6 +43,9 @@ function TaskList({ tasks, setTasks }: Props) {
           tasks={tasks}
         />
       ))}
+      <sub style={
+        { display: "block", textAlign: "center", marginTop: "10px", color: "#6c757d", fontSize: "14px" }
+      }>double click on a task to edit</sub>
     </ul>
   );
 }

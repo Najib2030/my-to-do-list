@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   User,
+  sendEmailVerification,
 } from "firebase/auth";
 
 interface Props {
@@ -16,27 +17,56 @@ interface Props {
 const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [googleUser, setGoogleUser] = useState<User | null>(null);
+  const [isRegister, setIsRegister] = useState(true);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleSignIn = async () => {
+    if (!email || !password) {
+      setError("Please enter your email and password");
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (!userCredential.user.emailVerified) {
+        setError("Please verify your email before signing in");
+        return;
+      }
       setIsAuthenticated(true);
       localStorage.setItem("auth", "true");
       setError("");
     } catch {
-      setError("Email or Password is not correct");
+      setError("❌ Email or Password is not correct, please Register first");
     }
   };
 
-  const handleLogIn = async () => {
+  const handleRegister = async () => {
+    if (!email || !password || !confirmPassword) {
+      setError("Please fill all fields");
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      setIsAuthenticated(true);
-      localStorage.setItem("auth", "true");
-      setError("");
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(userCredential.user);
+      setError("✅ Verification email sent! Please check your inbox");
     } catch {
-      setError("There is already an account with this email");
+      setError("❌ There is already an account with this email");
     }
   };
 
@@ -48,9 +78,11 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
       setError("");
       setGoogleUser(result.user);
     } catch {
-      setError("Google sign-in failed");
+      setError("❌ Google sign-in failed");
     }
   };
+
+  const isSuccess = error.startsWith("✅");
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-gradient bg-light">
@@ -58,7 +90,11 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
         className="card shadow-lg p-4 animate__animated animate__fadeInUp"
         style={{ maxWidth: "420px", width: "100%", borderRadius: "20px" }}
       >
-        <h3 className="text-center mb-4 fw-bold text-primary">Welcome🚀</h3>
+        <h3 className="text-center mb-4 fw-bold text-primary">
+          {isRegister ? "Register 🚀" : "Sign In 🚀"}
+        </h3>
+
+        {/* Email Input */}
         <div className="mb-3">
           <label className="form-label">Email address</label>
           <input
@@ -69,6 +105,8 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
             required
           />
         </div>
+
+        {/* Password Input */}
         <div className="mb-3">
           <label className="form-label">Password</label>
           <input
@@ -79,22 +117,48 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
             required
           />
         </div>
+
+        {/* Confirm Password Input (only for Register) */}
+        {isRegister && (
+          <div className="mb-3">
+            <label className="form-label">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control form-control-lg"
+              placeholder="Confirm your password"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+        )}
+
+        {/* Error / Success Messages */}
         {error && (
-          <p className="text-danger small text-center mb-2 animate__animated animate__shakeX">
+          <p
+            className={`small text-center mb-2 animate__animated animate__shakeX fw-bold`}
+            style={{ color: isSuccess ? "green" : "red" }}
+          >
             {error}
           </p>
         )}
+
+        {/* Auth Buttons */}
         <div className="d-grid gap-2 mb-3">
-          <button className="btn btn-primary btn-lg" onClick={handleSignIn}>
-            Sign In
-          </button>
-          <button className="btn btn-secondary btn-lg" onClick={handleLogIn}>
-            Register
-          </button>
+          {isRegister ? (
+            <button className="btn btn-primary btn-lg" onClick={handleRegister}>
+              Register
+            </button>
+          ) : (
+            <button className="btn btn-primary btn-lg" onClick={handleSignIn}>
+              Sign In
+            </button>
+          )}
         </div>
-        <div className="d-flex align-items-center justify-content-between p-2 border rounded bg-white shadow-sm">
+
+        {/* Google Auth */}
+        <div className="d-flex align-items-center justify-content-between p-2 border rounded bg-white shadow-sm mb-3">
           <button
-            className="btn  w-100 d-flex align-items-center justify-content-center"
+            className="btn w-100 d-flex align-items-center justify-content-center"
             onClick={handleGoogleSignIn}
           >
             <img
@@ -104,7 +168,7 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
               height="20"
               className="me-2"
             />
-            Sign In with Google
+            {isRegister ? "Register with Google" : "Sign In with Google"}
           </button>
           {googleUser && (
             <div className="ms-3 d-flex align-items-center">
@@ -119,6 +183,33 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
             </div>
           )}
         </div>
+
+        {/* Toggle between Register and Sign In */}
+        <p className="text-center">
+          {isRegister ? (
+            <>
+              You have an account?{" "}
+              <span
+                className="text-primary fw-bold"
+                style={{ cursor: "pointer" }}
+                onClick={() => setIsRegister(false)}
+              >
+                Sign In
+              </span>
+            </>
+          ) : (
+            <>
+              Don't have an account?{" "}
+              <span
+                className="text-primary fw-bold"
+                style={{ cursor: "pointer" }}
+                onClick={() => setIsRegister(true)}
+              >
+                Register
+              </span>
+            </>
+          )}
+        </p>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ function Header() {
       <div className="container-fluid">
         <span className="navbar-brand mb-0 mx-auto h1 text-white">
           <span className="d-inline-block align-text-top">
-            <img src="../public/logo.png" alt="me" width="30" height="30" />
+            <img src="../logo.png" alt="me" width="30" height="30" />
           </span> My To-Do List
         </span>
       </div>
