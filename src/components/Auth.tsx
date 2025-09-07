@@ -66,6 +66,11 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
       await sendEmailVerification(userCredential.user);
       setError("✅ Verification email sent! Please check your inbox");
     } catch {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (!userCredential.user.emailVerified) {
+        setError("Verification email sent! Please verify your email");
+        return;
+      }
       setError("❌ There is already an account with this email");
     }
   };
