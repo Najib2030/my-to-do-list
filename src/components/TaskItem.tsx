@@ -3,23 +3,36 @@ import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../config/fireBase";
 
 interface Props {
-  task: { id: string; text: string; completed: boolean };
+  task: { id: string; task: string; completed: boolean };
   onToggle: (id: string, completed: boolean) => void;
   onDelete: (id: string) => void;
   setTasks: (tasks: any[]) => void;
   tasks: any[];
+  title: string;
+  groupId: string;
 }
 
-function TaskItem({ task, onToggle, onDelete, setTasks, tasks }: Props) {
+function TaskItem({
+  task,
+  onToggle,
+  onDelete,
+  setTasks,
+  tasks,
+  groupId,
+  title,
+}: Props) {
   const [isEditing, setIsEditing] = useState(false);
-  const [updatedTask, setUpdatedTask] = useState(task.text);
+  const [updatedTask, setUpdatedTask] = useState(task.task);
 
   const onEdit = async (id: string, updatedTask: string) => {
-    const taskDoc = doc(db, `${auth?.currentUser?.email}`, id);
-    await updateDoc(taskDoc, { text: updatedTask });
+    const taskDoc = doc(
+      db,
+      `${auth?.currentUser?.email}/${groupId}/${title}/${id}`
+    );
+    await updateDoc(taskDoc, { task: updatedTask });
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, text: updatedTask } : task
+        task.id === id ? { ...task, task: updatedTask } : task
       )
     );
   };
@@ -35,9 +48,13 @@ function TaskItem({ task, onToggle, onDelete, setTasks, tasks }: Props) {
   return (
     <li
       className="list-group-item d-flex align-item-center justify-content-between"
+      style={{ cursor: "pointer" }}
       onDoubleClick={() => setIsEditing(true)}
     >
-      <div className="d-flex align-items-center">
+      <div
+        className="align-items-center d-flex me-2"
+        style={{ width: "-webkit-fill-available" }}
+      >
         <input
           id={`taskCheckbox-${task.id}`}
           type="checkbox"
@@ -50,11 +67,18 @@ function TaskItem({ task, onToggle, onDelete, setTasks, tasks }: Props) {
             className="form-control"
             value={updatedTask}
             onChange={(e) => setUpdatedTask(e.target.value)}
-            onBlur={handleEdit}
+            onBlur={() => {
+              setIsEditing(false);
+              setUpdatedTask(task.task);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleEdit();
-              if (e.key === "Escape") setIsEditing(false);
+              if (e.key === "Escape") {
+                setIsEditing(false);
+                setUpdatedTask(task.task);
+              }
             }}
+            style={{ width: "-webkit-fill-available" }}
             autoFocus
           />
         ) : (
@@ -63,9 +87,8 @@ function TaskItem({ task, onToggle, onDelete, setTasks, tasks }: Props) {
             style={{
               textDecoration: task.completed ? "line-through" : "none",
             }}
-            onClick={() => setUpdatedTask(task.text)}
           >
-            {task.text}
+            {task.task}
           </label>
         )}
       </div>

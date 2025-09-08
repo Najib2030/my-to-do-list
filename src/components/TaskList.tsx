@@ -5,12 +5,14 @@ import { db, auth } from "../config/fireBase";
 interface Props {
   tasks: any[];
   setTasks: (tasks: any[]) => void;
+  title: string;
+  groupId: string;
 }
 
-function TaskList({ tasks, setTasks }: Props) {
+function TaskList({ tasks, setTasks, title, groupId }: Props) {
 
   const onToggle = async (id: string, completed: boolean) => {
-    const taskDoc = doc(db, `${auth?.currentUser?.email}`, id);
+    const taskDoc = doc(db, `${auth?.currentUser?.email}/${groupId}/${title}/${id}` );
     await updateDoc(taskDoc, { completed: completed });
     setTasks(
       tasks.map((task) =>
@@ -20,7 +22,7 @@ function TaskList({ tasks, setTasks }: Props) {
   };
   
   const onDelete = async (id: string) => {
-    const taskDoc = doc(db, `${auth?.currentUser?.email}`, id);
+    const taskDoc = doc(db, `${auth?.currentUser?.email}/${groupId}/${title}/${id}` );
     await deleteDoc(taskDoc);
     setTasks(tasks.filter((t) => t.id !== id));
   };
@@ -41,6 +43,8 @@ function TaskList({ tasks, setTasks }: Props) {
           onDelete={onDelete}
           setTasks={setTasks}
           tasks={tasks}
+          groupId={groupId}
+          title={title}
         />
       ))}
       <sub style={
