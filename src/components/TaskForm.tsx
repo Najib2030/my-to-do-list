@@ -28,7 +28,7 @@ function TaskForm({ getTasks, tasksCollectionRef }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-3">
+    <form onSubmit={handleSubmit} className="mb-3 mx-2">
       <div className="input-group">
         <input
           type="text"

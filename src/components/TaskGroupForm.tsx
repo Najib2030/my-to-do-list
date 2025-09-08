@@ -26,12 +26,12 @@ function TaskGroupForm({ getTasks, tasksCollectionRef }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-3">
+    <form onSubmit={handleSubmit} className="mb-3 mx-2">
       <div className="input-group">
         <input
           type="text"
           className="form-control"
-          placeholder="Add a new task title..."
+          placeholder="Add a new tasks title..."
           value={taskGroupTitle}
           onChange={(e) => setTaskGroupTitle(e.target.value)}
         />
