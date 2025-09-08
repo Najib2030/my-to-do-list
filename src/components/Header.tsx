@@ -5,8 +5,9 @@ interface Props {
 }
 
 function Header({ header, setClicked, setHeader }: Props) {
+  const cc = "#0d6efd";
   return (
-    <nav className="navbar bg-primary mb-4 rounded">
+    <nav className="navbar mb-4 rounded" style={{backgroundColor: header === "My To-Do List" ? ("#ab0fda") : ("#0d6efd")}}>
       <div className="container-fluid">
         {header === "My To-Do List" ? (
           ""

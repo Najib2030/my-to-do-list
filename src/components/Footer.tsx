@@ -6,12 +6,13 @@ interface Props {
   setFilter: (filter: "all" | "active" | "completed") => void;
   setIsAuthenticated: (isAuth: boolean) => void;
   getTasks: () => void;
+  header: string;
 }
 
-function Footer({ count, filter, setFilter, setIsAuthenticated, getTasks }: Props) {
+function Footer({ count, filter, setFilter, setIsAuthenticated, getTasks, header }: Props) {
   return (
     <div className="bg-light border-top py-2 fixed-bottom px-2">
-      <div className="d-flex justify-content-between align-items-center">
+      {header === "My To-Do List" ? ("") : (<div className="d-flex justify-content-between align-items-center">
         {count === 1 ? (
           filter === "completed" ? (
             <span>{count} task completed</span>
@@ -53,10 +54,10 @@ function Footer({ count, filter, setFilter, setIsAuthenticated, getTasks }: Prop
             Completed
           </button>
         </div>
-      </div>
+      </div>)}
       <div className="d-flex justify-content-between align-items-center">
-        <span className="small">© 2025 My React App</span>
-        <SignOut setIsAuthenticated={setIsAuthenticated} />
+        <span className="small">© 2025 Najib Abdelilah</span>
+        <SignOut setIsAuthenticated={setIsAuthenticated} header={header}/>
       </div>
     </div>
   );

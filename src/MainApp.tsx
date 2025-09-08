@@ -88,15 +88,16 @@ const MainApp = ({ setIsAuthenticated }: Props) => {
             tasks={filteredTasks}
             setTasks={setTasks}
           />
-          <Footer
-            getTasks={getTasks}
-            count={filteredTasks.length}
-            filter={filter}
-            setFilter={setFilter}
-            setIsAuthenticated={setIsAuthenticated}
-          />
         </>
       )}
+      <Footer
+        getTasks={getTasks}
+        count={filteredTasks.length}
+        filter={filter}
+        setFilter={setFilter}
+        setIsAuthenticated={setIsAuthenticated}
+        header={header}
+      />
     </>
   );
 };

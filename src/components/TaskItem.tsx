@@ -47,8 +47,8 @@ function TaskItem({
 
   return (
     <li
-      className="list-group-item d-flex align-item-center justify-content-between"
-      style={{ cursor: "pointer" }}
+      className="list-group-item d-flex align-item-center justify-content-between mx-1 mb-2"
+      style={{ cursor: "pointer", border: "1px solid", borderRadius: "5px" }}
       onDoubleClick={() => setIsEditing(true)}
     >
       <div

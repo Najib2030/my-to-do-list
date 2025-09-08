@@ -35,7 +35,7 @@ function TaskGroupForm({ getTasks, tasksCollectionRef }: Props) {
           value={taskGroupTitle}
           onChange={(e) => setTaskGroupTitle(e.target.value)}
         />
-        <button className="btn btn-primary" type="submit">
+        <button className="btn" type="submit" style={{backgroundColor: "#ab0fda"}}>
           Add
         </button>
       </div>

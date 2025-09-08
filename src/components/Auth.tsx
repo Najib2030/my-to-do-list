@@ -92,8 +92,8 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-gradient bg-light">
       <div
-        className="card shadow-lg p-4 animate__animated animate__fadeInUp"
-        style={{ maxWidth: "420px", width: "100%", borderRadius: "20px" }}
+        className="card p-4 animate__animated animate__fadeInUp"
+        style={{ maxWidth: "420px", width: "100%", borderRadius: "20px", boxShadow: "rgb(139 26 237 / 57%) 0px 0rem 3rem 0px" }}
       >
         <h3 className="text-center mb-4 fw-bold text-primary">
           {isRegister ? "Register 🚀" : "Sign In 🚀"}
