@@ -14,6 +14,7 @@ function TaskForm({ getTasks, tasksCollectionRef }: Props) {
     await addDoc(tasksCollectionRef, {
       task: task,
       completed: false,
+      description: "",
     });
 
     getTasks();

@@ -60,6 +60,9 @@ function TaskGroupList({
           setIdClicked={setIdClicked}
         />
       ))}
+      <sub style={
+        { display: "block", textAlign: "center", marginTop: "10px", color: "#6c757d", fontSize: "14px" }
+      }>click on a title to view the tasks.</sub>
     </ul>
   );
 }

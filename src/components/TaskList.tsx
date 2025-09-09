@@ -49,7 +49,7 @@ function TaskList({ tasks, setTasks, title, groupId }: Props) {
       ))}
       <sub style={
         { display: "block", textAlign: "center", marginTop: "10px", color: "#6c757d", fontSize: "14px" }
-      }>double click on a task to edit</sub>
+      }>click on a task to describe it.</sub>
     </ul>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../config/fireBase";
 
 interface Props {
@@ -25,6 +25,21 @@ function TaskItem({
   const [updatedTask, setUpdatedTask] = useState(task.text);
 
   const onEdit = async (id: string, updatedTask: string) => {
+    
+
+    const oldRef = collection(db, `${auth?.currentUser?.email}`, id, task.text);
+    const newRef = collection(db, `${auth?.currentUser?.email}`, id, updatedTask);
+
+    const snapshot = await getDocs(oldRef);
+
+    for (const d of snapshot.docs) {
+      await setDoc(doc(newRef, d.id), d.data());
+    }
+
+    for (const d of snapshot.docs) {
+      await deleteDoc(doc(oldRef, d.id));
+    }
+
     const taskDoc = doc(db, `${auth?.currentUser?.email}`, id);
     await updateDoc(taskDoc, { text: updatedTask });
     setTasks(
@@ -32,10 +47,13 @@ function TaskItem({
         task.id === id ? { ...task, text: updatedTask } : task
       )
     );
+
+    console.log("Subcollection renamed successfully!");
   };
 
   const handleEdit = () => {
     if (!updatedTask.trim()) {
+      setUpdatedTask(task.text);
     } else {
       onEdit(task.id, updatedTask);
     }
