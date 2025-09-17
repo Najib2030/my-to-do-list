@@ -33,9 +33,10 @@ function Header({
   const cc = "#0d6efd";
   return (
     <nav
-      className="navbar mb-4 rounded"
+      className="navbar mb-4"
       style={{
         backgroundColor: header === "Task Notes" ? "#ab0fda" : "#0d6efd",
+        borderRadius: "0 0 6px 6px",
       }}
     >
       <div className="container-fluid" style={{ flexWrap: "nowrap" }}>
