@@ -1,25 +1,25 @@
-import { useState } from "react";
 import { auth, googleProvider } from "../config/fireBase";
+import { useState } from "react";
 import {
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
   signInWithPopup,
   User,
-  sendEmailVerification,
 } from "firebase/auth";
 
 interface Props {
-  setError: (error: string) => void;
   error: string;
+  setError: (error: string) => void;
   setIsAuthenticated: (isAuth: boolean) => void;
 }
 
 const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isRegister, setIsRegister] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [googleUser, setGoogleUser] = useState<User | null>(null);
-  const [isRegister, setIsRegister] = useState(true);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -56,6 +56,10 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
       setError("Please enter a valid email address");
       return;
     }
+    if (password.length < 6) {
+      setError("Weak-password, Password should be at least 6 characters");
+      return;
+    }
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -65,13 +69,14 @@ const Auth = ({ setError, error, setIsAuthenticated }: Props) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
       setError("✅ Verification email sent! Please check your inbox");
-    } catch {
+    } catch(err) {
+      console.log("error:", err)
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user.emailVerified) {
         setError("Verification email sent! Please verify your email, check your spam folder too");
         return;
       }
-      setError("❌ There is already an account with this email");
+      setError("❌ There is already an account with this email, Please Sign In");
     }
   };
 

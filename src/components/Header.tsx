@@ -1,37 +1,74 @@
 interface Props {
-  header: string;
-  setClicked: (clicked: boolean) => void;
+  setBackHeader: (backHeader: string) => void;
+  setBlockIndex: (blockIndex: string) => void;
   setHeader: (header: string) => void;
+  backHeader: string;
+  blockIndex: string;
+  header: string;
 }
 
-function Header({ header, setClicked, setHeader }: Props) {
+function Header({
+  header,
+  setHeader,
+  backHeader,
+  blockIndex,
+  setBackHeader,
+  setBlockIndex,
+}: Props) {
+  const back = () => {
+    if (backHeader !== "Trash" && backHeader !== "Task Notes") {
+      setHeader(backHeader);
+      setBackHeader("Task Notes");
+    } else if (blockIndex === "block2") {
+      setHeader(backHeader);
+      setBackHeader("Task Notes");
+    } else if (blockIndex === "block3w") {
+      setHeader("Task groups shared with you");
+      setBlockIndex("block2");
+    } else if (blockIndex === "block3f") {
+      setHeader("Task groups you shared");
+      setBlockIndex("block2");
+    }
+  };
   const cc = "#0d6efd";
   return (
-    <nav className="navbar mb-4 rounded" style={{backgroundColor: header === "My To-Do List" ? ("#ab0fda") : ("#0d6efd")}}>
-      <div className="container-fluid">
-        {header === "My To-Do List" ? (
+    <nav
+      className="navbar mb-4 rounded"
+      style={{
+        backgroundColor: header === "Task Notes" ? "#ab0fda" : "#0d6efd",
+      }}
+    >
+      <div className="container-fluid" style={{ flexWrap: "nowrap" }}>
+        {header === "Task Notes" ? (
           ""
         ) : (
           <button
-            className="btn position-absolute"
+            className="btn"
             style={{
               color: "rgba(6, 36, 137, 1)",
               fontWeight: "bold",
               backgroundColor: "#ab0fdaff",
               border: "2px solid pink",
-
+              minWidth: "fit-content",
             }}
             onClick={() => {
-              setClicked(true), setHeader("My To-Do List");
+              back();
             }}
           >
             &lt;- Return
           </button>
         )}
-        <span className="navbar-brand mb-0 mx-auto h1 text-white">
-          {header === "My To-Do List" ? (
-            <span className="d-inline-block align-text-top">
-              <img src="/logo.png" alt="me" width="30" height="30" />
+        <span
+          className="navbar-brand mb-0 mx-auto h1 text-white"
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            textAlign: "center",
+          }}
+        >
+          {header === "Task Notes" ? (
+            <span className="">
+              <img src="/logo.png" alt="me" width="70" height="70" />
             </span>
           ) : (
             ""

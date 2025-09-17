@@ -1,20 +1,24 @@
+import { setDoc, doc } from "firebase/firestore";
 import { useState } from "react";
-import { addDoc } from "firebase/firestore";
 
 interface Props {
-  getTasks: () => void;
+  getTasksGroup: () => void;
   tasksCollectionRef: any;
 }
 
-function TaskGroupForm({ getTasks, tasksCollectionRef }: Props) {
+function TaskGroupForm({ getTasksGroup, tasksCollectionRef }: Props) {
   const [taskGroupTitle, setTaskGroupTitle] = useState("");
 
   const addTaskGroup = async (task: string) => {
-    await addDoc(tasksCollectionRef, {
+
+    const today = new Date();
+    const newId = today.getTime().toString();
+
+    await setDoc(doc(tasksCollectionRef, newId), {
       text: task,
     });
 
-    getTasks();
+    getTasksGroup();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -35,7 +39,11 @@ function TaskGroupForm({ getTasks, tasksCollectionRef }: Props) {
           value={taskGroupTitle}
           onChange={(e) => setTaskGroupTitle(e.target.value)}
         />
-        <button className="btn" type="submit" style={{backgroundColor: "#ab0fda"}}>
+        <button
+          className="btn"
+          type="submit"
+          style={{ backgroundColor: "#ab0fda" }}
+        >
           Add
         </button>
       </div>

@@ -1,16 +1,21 @@
-import { useState } from "react";
-import { auth, db } from "../config/fireBase";
 import { doc, updateDoc } from "firebase/firestore";
+import { useState } from "react";
 
 interface Props {
   task: { id: string; task: string; completed: boolean; description: string };
   setTasks: (tasks: any[]) => void;
+  tasksCollectionRef: any;
+  backHeader: string;
   tasks: any[];
-  title: string;
-  groupId: string;
 }
 
-function Textarea({ task, setTasks, tasks, groupId, title }: Props) {
+function Textarea({
+  task,
+  tasks,
+  setTasks,
+  backHeader,
+  tasksCollectionRef,
+}: Props) {
   const [updatedDescription, setUpdatedDescription] = useState(
     task.description
   );
@@ -18,21 +23,15 @@ function Textarea({ task, setTasks, tasks, groupId, title }: Props) {
     updatedDescription === "" ? true : false
   );
 
-  const handleDescriptionEdit = () => {
-    if (!updatedDescription.trim()) {
-      onDescriptionEdit(task.id, updatedDescription);
-      return;
-    } else {
-      onDescriptionEdit(task.id, updatedDescription);
+  const handleDescriptionEdit = async () => {
+    if (updatedDescription.trim()) {
+      setDescriptionEdit(false);
     }
-    setDescriptionEdit(false);
+    await onDescriptionEdit(task.id, updatedDescription);
   };
 
   const onDescriptionEdit = async (id: string, updatedDescription: string) => {
-    const taskDoc = doc(
-      db,
-      `${auth?.currentUser?.email}/${groupId}/${title}/${id}`
-    );
+    const taskDoc = doc(tasksCollectionRef, id);
     await updateDoc(taskDoc, { description: updatedDescription });
     setTasks(
       tasks.map((task) =>
@@ -95,17 +94,19 @@ function Textarea({ task, setTasks, tasks, groupId, title }: Props) {
           >
             {task.description}
           </textarea>
-          <button
-            className="btn btn-sm btn-primary"
-            style={{
-              position: "absolute",
-              right: 8,
-              bottom: 15,
-            }}
-            onClick={() => setDescriptionEdit(true)}
-          >
-            edit
-          </button>
+          {backHeader === "Task Notes" && (
+            <button
+              className="btn btn-sm btn-primary"
+              style={{
+                position: "absolute",
+                right: 8,
+                bottom: 15,
+              }}
+              onClick={() => setDescriptionEdit(true)}
+            >
+              edit
+            </button>
+          )}
         </>
       )}
     </div>

@@ -15,7 +15,7 @@ function SignOut({ setIsAuthenticated, header }: Props) {
   };
 
   return (
-    <button className="btn btn-sm mt-1 text-white" onClick={handleSignOut} style={{fontWeight: "bold", backgroundColor: header === "My To-Do List" ? ("#ab0fda") : ("#0d6efd")}}>
+    <button className="btn btn-sm mt-1 text-white" onClick={handleSignOut} style={{fontWeight: "bold", backgroundColor: header === "Task Notes" ? ("#ab0fda") : ("#0d6efd")}}>
       {" "}
       Sign Out{" "}
     </button>

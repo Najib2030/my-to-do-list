@@ -1,17 +1,19 @@
+import { setDoc, doc } from "firebase/firestore";
 import { useState } from "react";
-import { addDoc } from "firebase/firestore";
-import { auth } from "../config/fireBase";
 
 interface Props {
-  getTasks: () => void;
   tasksCollectionRef: any;
+  getTasks: () => void;
 }
 
 function TaskForm({ getTasks, tasksCollectionRef }: Props) {
   const [task, setTask] = useState("");
 
   const addTask = async (task: string) => {
-    await addDoc(tasksCollectionRef, {
+    const today = new Date();
+    const newId = today.getTime().toString();
+
+    await setDoc(doc(tasksCollectionRef, newId), {
       task: task,
       completed: false,
       description: "",
